@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import album from '../../assets/icons/album.png';
 import camera from '../../assets/icons/camera.png';
 import { COLOR_OPTIONS, SEASON_OPTIONS, CATEGORY_OPTIONS, type Option } from '../../data/constants';
-
-const BASE_URL = 'http://192.168.xxx.xxx:8080';
+import { addCloth } from '../../api/closet';
 
 const AddClothes = () => {
   const navigate = useNavigate();
@@ -34,18 +33,9 @@ const AddClothes = () => {
     formData.append('memo', memo);
 
     try {
-      const response = await fetch(`${BASE_URL}/api/closet`, {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer {accessToken}' },
-        body: formData
-      });
-      const result = await response.json();
-      if (result.success) {
+        await addCloth(formData);
         alert("옷이 추가되었어요.");
         setIsSubmitted(true);
-      } else {
-        alert("등록 실패: " + result.message);
-      }
     } catch (error) {
       console.error("서버 전송 오류:", error);
       alert("서버와 연결할 수 없습니다.");

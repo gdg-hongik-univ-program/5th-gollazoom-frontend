@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
-import { CATEGORY_OPTIONS, SEASON_OPTIONS } from '../data/constants';
+import { CATEGORY_OPTIONS, SEASON_OPTIONS, type Option } from '../data/constants';
+import { deleteCloth } from '../api/closet';
+
+export interface ClothData {
+  clothId: number | string;
+  imageUrl: string;
+  category: string;
+  season: string;
+  rainOk: boolean;
+  memo?: string;
+}
 
 interface ClothDetailModalProps {
-  data: any;
+  data: ClothData;
   onClose: () => void;
   onRefresh: () => void;
 }
@@ -13,22 +23,17 @@ const ClothDetailModal = ({ data, onClose, onRefresh }: ClothDetailModalProps) =
   const [rainOk, setRainOk] = useState(data.rainOk);
   const [memo, setMemo] = useState(data.memo || '');
 
-  const BASE_URL = 'http://192.168.xxx.xxx:8080'; // 팀 백엔드 주소로 수정 필요
-
   const handleDelete = async () => {
     if (!window.confirm("정말 이 옷을 삭제할까요?")) return;
     try {
-      const response = await fetch(`${BASE_URL}/api/closet/${data.clothId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': 'Bearer {accessToken}' } // 실제 토큰 필요
-      });
-      if (response.status === 204 || response.ok) {
+        await deleteCloth(String(data.clothId));
         alert("옷이 성공적으로 삭제되었습니다.");
         onRefresh();
         onClose();
-      }
-    } catch (e) {
+      }catch (e) {
       console.error(e);
+      alert("삭제에 실패했습니다.");
+
     }
   };
 
@@ -53,8 +58,7 @@ const ClothDetailModal = ({ data, onClose, onRefresh }: ClothDetailModalProps) =
               onChange={(e) => setCategory(e.target.value)} 
               className="w-full p-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {/* opt 에러 해결: (opt: any) 추가 */}
-              {CATEGORY_OPTIONS.map((opt: any) => (
+              {CATEGORY_OPTIONS.map((opt: Option) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>
@@ -67,8 +71,7 @@ const ClothDetailModal = ({ data, onClose, onRefresh }: ClothDetailModalProps) =
               onChange={(e) => setSeason(e.target.value)} 
               className="w-full p-2.5 rounded-xl border border-gray-200 bg-gray-50"
             >
-              {/* opt 에러 해결: (opt: any) 추가 */}
-              {SEASON_OPTIONS.map((opt: any) => (
+              {SEASON_OPTIONS.map((opt: Option) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>

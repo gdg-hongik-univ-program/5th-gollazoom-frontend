@@ -1,4 +1,4 @@
-import { deleteUser } from "../api/members";
+import { deleteUser } from "../api/users";
 import { useNavigate } from "react-router-dom";
 
 const DeleteUserPage = () => {
@@ -6,12 +6,7 @@ const DeleteUserPage = () => {
     const handleDelete = async () => {
         if (!window.confirm("정말로 회원탈퇴를 진행하시겠습니까?")) return;
         try {
-            const id = localStorage.getItem('id');
-            if (!id) {
-                alert("존재하지 않는 아이디입니다.");
-                return;
-            }
-            await deleteUser(Number(id));
+            await deleteUser();
             localStorage.clear();
             alert("회원탈퇴가 완료되었습니다.");
             navigate("/login");
@@ -52,6 +47,7 @@ const DeleteUserPage = () => {
                 hongik
               </div>
             </div>
+
             {/* 닉네임 변경 버튼 */}
             <button 
               className="text-sm text-blue-600 hover:text-blue-800 font-semibold px-3 py-1 rounded-md hover:bg-blue-50 transition"
@@ -80,24 +76,30 @@ const DeleteUserPage = () => {
             </button>
           </div>
 
+          {/* 닉네임 */}
+          <div className="border-b border-gray-100 pb-4 flex justify-between items-center">
+            <div>
+              <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
+                절약한 시간
+              </label>
+              <div className="text-lg font-medium text-gray-800 tracking-widest">
+                n시간 n분
+              </div>
+            </div>
+            
+            {/* 닉네임 변경 버튼 */}
+            <button 
+              className="text-sm text-blue-600 hover:text-blue-800 font-semibold px-3 py-1 rounded-md hover:bg-blue-50 transition"
+              onClick={() => alert('추후 구현 예정 기능입니다.')}
+            >
+              확인
+            </button>
+          </div>
+
         </div>
 
         {/* 하단 버튼 영역 */}
         <div className="bg-gray-50 px-6 py-4 flex flex-col gap-3">
-          <button
-            onClick={() => navigate('/')}
-            className="w-full py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition shadow-sm"
-          >
-            홈으로 돌아가기
-          </button>
-          
-          <button
-            onClick={() => navigate('/closet')}
-            className="w-full py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition shadow-sm"
-          >
-            옷장으로 돌아가기
-          </button>
-          
           <button
             onClick={handleDelete}
             className="w-full py-2.5 text-red-600 border border-red-200 rounded-lg hover:bg-red-50 font-medium transition text-sm"

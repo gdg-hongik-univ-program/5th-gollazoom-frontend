@@ -4,6 +4,7 @@ import App from './App.tsx'
 import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 
+/*
 async function enableMocking() {
   if (!import.meta.env.DEV) {
     return
@@ -15,8 +16,8 @@ async function enableMocking() {
     onUnhandledRequest: 'bypass', 
   })
 }
-
-enableMocking().then(() => {
+*/
+//enableMocking().then(() => {
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
@@ -24,4 +25,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </React.StrictMode>,
 )
-})
+//})
