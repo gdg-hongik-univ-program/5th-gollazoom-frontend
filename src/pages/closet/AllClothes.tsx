@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CATEGORY_OPTIONS, type Option } from '../../data/constants';
 import ClothDetailModal from '../../components/ClothDetailModal';
-import { getClothes, getClothDetail } from '../../api/closet';
 
 interface Cloth {
   clothId: string;
@@ -12,6 +11,8 @@ interface Cloth {
   rainOk: boolean;
   memo?: string;
 }
+
+const BASE_URL = 'http://192.168.xxx.xxx:8080'; // 팀원 백엔드 IP 확인 필요
 
 const AllClothes = () => {
   const navigate = useNavigate();
@@ -23,9 +24,17 @@ const AllClothes = () => {
 
   const fetchClothes = useCallback(async () => {
     try {
-      const response = await getClothes({ page: 0, size: 20 });
-      if (response && response.items) {
-        setClothesData(response.items);
+      const response = await fetch(`${BASE_URL}/api/closet`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer {accessToken}' // 실제 토큰 로직 필요
+        },
+        body: JSON.stringify({ page: 0, size: 20 })
+      });
+      const result = await response.json();
+      if (result.success) {
+        setClothesData(result.data.items);
       }
     } catch (error) {
       console.error("의상 목록 로드 실패:", error);
@@ -39,8 +48,14 @@ const AllClothes = () => {
   // 3. 개별 아이템 클릭 시 상세 정보 가져오기
   const handleItemClick = async (clothId: string) => {
     try {
-      const response = await getClothDetail(clothId);
-      setSelectedItem(response);
+      const response = await fetch(`${BASE_URL}/api/closet/${clothId}`, {
+        method: 'GET',
+        headers: { 'Authorization': 'Bearer {accessToken}' }
+      });
+      const result = await response.json();
+      if (result.success) {
+        setSelectedItem(result.data);
+      }
     } catch (e) { console.error(e); }
   };
 
@@ -66,6 +81,7 @@ const AllClothes = () => {
     );
   }
 
+  
   if (!selectedCategory) return null;
   // 선택된 카테고리에 맞는 아이템 필터링
   const filteredItems = clothesData.filter(item => item.category === selectedCategory.value);

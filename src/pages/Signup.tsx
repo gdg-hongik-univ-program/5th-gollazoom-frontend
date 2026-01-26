@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { signup } from "../api/users";
+import { signup } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
     const [formData, setFormData] = useState({
         username: "",
         password: "",
-        nickname: "",
+        name: "",
     });
 
     const navigate = useNavigate();
@@ -25,7 +25,7 @@ const SignupPage = () => {
             console.log("Signup successful:", data);
             localStorage.setItem('id', data.id);
             localStorage.setItem('username', data.username);
-            localStorage.setItem('name', data.nickname);
+            localStorage.setItem('name', data.name);
             navigate("/login");
         } catch (error) {
             console.error("Signup failed:", error);
@@ -73,8 +73,7 @@ const SignupPage = () => {
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-1">닉네임</label>
               <input
-                name="nickname"
-                value={formData.nickname}
+                name="name"
                 type="text"
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"

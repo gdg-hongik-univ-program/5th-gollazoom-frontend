@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { changePassword } from '../api/users';
+import { changePassword } from '../api/members';
 import { AxiosError } from 'axios';
 
 const ChangePw = () => {
@@ -19,6 +19,7 @@ const ChangePw = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    /* 클라이언트 유효성 검사
     if (formData.newpassword !== formData.confirmNewPassword) {
       alert("새 비밀번호가 서로 일치하지 않습니다.");
       return;
@@ -27,6 +28,7 @@ const ChangePw = () => {
       alert("비밀번호는 4자리 이상이어야 합니다.");
       return;
     }
+    */
 
     try {
       const userId = localStorage.getItem('id');
@@ -36,7 +38,7 @@ const ChangePw = () => {
         return;
       }
       // 비밀번호 변경 API 호출
-      await changePassword({
+      await changePassword(userId, {
         currentpassword: formData.currentpassword,
         newpassword: formData.newpassword
       });
@@ -97,6 +99,15 @@ const ChangePw = () => {
               placeholder="변경할 비밀번호 다시 입력"
               onChange={handleChange}
             />
+            
+            {/*
+            {/* 비밀번호 일치 여부 실시간 안내 메시지 (선택 사항)
+            {formData.newpassword && formData.confirmNewPassword && (
+              <p className={`text-xs mt-1 ${formData.newpassword === formData.confirmNewPassword ? 'text-green-600' : 'text-red-500'}`}>
+                {formData.newpassword === formData.confirmNewPassword ? "비밀번호가 일치합니다." : "비밀번호가 일치하지 않습니다."}
+            </p>
+            */}
+
           </div>
 
           <button
