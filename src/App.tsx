@@ -9,7 +9,6 @@ import AddClothes from './pages/closet/AddClothes';
 import AllClothes from './pages/closet/AllClothes';
 import CoordiSave from './pages/closet/CoordiSave';
 import AllCoordi from './pages/closet/AllCoordi';
-import CalendarPage from './pages/calendar/CalendarPage';
 import ClosetLayout from './layouts/Closetlayout';
 
 function App() {
@@ -22,7 +21,7 @@ function App() {
       <Route element={<ClosetLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/deleteuser" element={<DeleteuserPage />} />
-        <Route path="/calendar" element={<CalendarPage />} />
+        <Route path="/calendar" element={<div className="p-6 font-bold">캘린더 준비중</div>} />
         <Route path="/closet" element={<Closet />} />
         <Route path="/closet/all" element={<AllClothes />} />
         <Route path="/closet/add" element={<AddClothes />} />

@@ -24,15 +24,6 @@ export const SEASON_OPTIONS: Option[] = [
 export const CATEGORY_OPTIONS: Option[] = [
   { label: '상의', value: 'TOP' },
   { label: '하의', value: 'BOTTOM' },
-  { label: '원피스', value: 'DRESS' },
+  { label: '신발', value: 'SHOES' },
   { label: '아우터', value: 'OUTER' },
-];
-
-export const TAG_OPTIONS = [
-  { label: '출근룩', value: 'daily' },
-  { label: '데이트룩', value: 'date' },
-  { label: '격식있는 룩', value: 'formal' },
-  { label: '캐주얼룩', value: 'casual' },
-  { label: '스포츠룩', value: 'sports' },
-  { label: '여행/휴가룩', value: 'travel', },
 ];

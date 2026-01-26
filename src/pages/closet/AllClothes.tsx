@@ -36,7 +36,7 @@ const AllClothes = () => {
     fetchClothes();
   }, [fetchClothes]);
 
-  // 개별 아이템 클릭 시 상세 정보 가져오기
+  // 3. 개별 아이템 클릭 시 상세 정보 가져오기
   const handleItemClick = async (clothId: string) => {
     try {
       const response = await getClothDetail(clothId);
@@ -74,6 +74,7 @@ const AllClothes = () => {
     <div className="flex flex-col h-full bg-white p-6">
       <div className="flex items-center gap-3 mb-6">
         <button onClick={() => setView('category')} className="text-2xl">←</button>
+        {/* 위에서 null 체크를 했으므로 안전하게 접근 가능 */}
         <h3 className="text-xl font-bold">{selectedCategory.label} 목록</h3>
       </div>
 

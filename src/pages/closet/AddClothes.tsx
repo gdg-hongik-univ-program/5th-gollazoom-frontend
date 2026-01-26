@@ -10,41 +10,25 @@ const AddClothes = () => {
   const [image, setImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [category, setCategory] = useState('');
+  const [season, setSeason] = useState('');
   const [rainOk, setRainOk] = useState(true);
-  // 단일 선택('')에서 중복 선택([])으로 변경
-  const [selectedSeasons, setSelectedSeasons] = useState<string[]>([]);
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
-
+  const [color, setColor] = useState('');
   const [memo, setMemo] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const albumRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
 
-  // 토글 함수 추가 (계절용)
-  const toggleSeason = (value: string) => {
-    setSelectedSeasons(prev => 
-      prev.includes(value) ? prev.filter(s => s !== value) : [...prev, value]
-    );
-  };
-
-  // 토글 함수 추가 (색상용)
-  const toggleColor = (value: string) => {
-    setSelectedColors(prev => 
-      prev.includes(value) ? prev.filter(c => c !== value) : [...prev, value]
-    );
-  };
-
   const handleSubmit = async () => {
-    if (!imageFile || !category || selectedSeasons.length === 0 || selectedColors.length === 0) {
+    if (!imageFile || !category || !season) {
       alert("각 정보는 반드시 입력되어야 합니다.");
       return;
     }
     const formData = new FormData();
     formData.append('image', imageFile);
     formData.append('category', category);
-    formData.append('season', selectedSeasons.join(','));
-    formData.append('color', selectedColors.join(','));
+    formData.append('season', season);
+    formData.append('color', color);
     formData.append('rainOk', String(rainOk));
     formData.append('memo', memo);
 
@@ -116,23 +100,11 @@ const AddClothes = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-gray-500 mb-3">계절 (중복 선택 가능)</label>
-                <div className="flex flex-wrap gap-2">
-                  {SEASON_OPTIONS.map((opt: Option) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      onClick={() => toggleSeason(opt.value)}
-                      className={`px-4 py-2 rounded-full border text-sm font-bold transition-all ${
-                        selectedSeasons.includes(opt.value)
-                          ? 'bg-blue-600 text-white border-blue-600'
-                          : 'bg-gray-50 text-gray-400 border-gray-200'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
+                <label className="block text-sm font-bold text-gray-500 mb-2">계절</label>
+                <select value={season} onChange={(e) => setSeason(e.target.value)} className="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 outline-none">
+                  <option value="" disabled>선택하세요</option>
+                  {SEASON_OPTIONS.map((opt: Option) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                </select>
               </div>
 
               <div>
@@ -144,28 +116,16 @@ const AddClothes = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-gray-500 mb-3">색상 (중복 선택 가능)</label>
-                <div className="flex flex-wrap gap-2">
-                  {COLOR_OPTIONS.map((opt: Option) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      onClick={() => toggleColor(opt.value)}
-                      className={`px-4 py-2 rounded-full border text-sm font-bold transition-all ${
-                        selectedColors.includes(opt.value)
-                          ? 'bg-blue-600 text-white border-blue-600'
-                          : 'bg-gray-50 text-gray-400 border-gray-200'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
+                <label className="block text-sm font-bold text-gray-500 mb-2">색상</label>
+                <select value={color} onChange={(e) => setColor(e.target.value)} className="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 outline-none">
+                  <option value="" disabled>색상을 선택하세요</option>
+                  {COLOR_OPTIONS.map((opt: Option) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                </select>
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-gray-500 mb-2">메모 (선택)</label>
-                <textarea value={memo} onChange={(e) => setMemo(e.target.value)} placeholder="메모를 자유롭게 입력하세요 (생략 가능)" className="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 h-24 resize-none outline-none" />
+                <label className="block text-sm font-bold text-gray-500 mb-2">메모</label>
+                <textarea value={memo} onChange={(e) => setMemo(e.target.value)} placeholder="메모를 입력하세요" className="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 h-24 resize-none outline-none" />
               </div>
 
               <button 
