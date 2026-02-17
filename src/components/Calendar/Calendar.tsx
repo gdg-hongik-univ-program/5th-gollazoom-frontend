@@ -8,6 +8,7 @@ import hanger from '../../assets/icons/hanger.png';
 import clothes from '../../assets/icons/clothes.png';
 import ClothItem from '../../components/common/ClothItem';
 import ConfirmModal from '../../components/common/ConfirmModal';
+import { CATEGORY_OPTIONS, type Option } from '../../data/constants';
 // import { MOCK_CLOTHES } from '../mocks/mockData';
 
 const Calendar = () => {
@@ -411,8 +412,9 @@ const handleFinalRegister = async (presetId?: number) => {
             onClick={fetchMyPresets}>
               저장된 코디에서 선택하기
             </button>
+            {/* 배경 파란색으로 수정*/}
             <button 
-              className="w-full py-4 bg-black text-white rounded-xl font-bold active:bg-gray-800 transition"
+              className="w-full py-4 bg-blue-600 text-white rounded-xl font-bold active:bg-gray-800 transition"
               onClick={() => setViewMode('create')}
             >
               새로운 코디 만들기
@@ -434,11 +436,16 @@ const handleFinalRegister = async (presetId?: number) => {
         return aStatus - bStatus; // 세탁 중인 옷이 뒤로 가게 함
       });
 
+      // (추가)2. 현재 선택된 영문 카테고리 값(selectingCategory)에 해당하는 한국어 라벨 찾기
+    const categoryLabel = CATEGORY_OPTIONS.find(
+      (opt) => opt.value === selectingCategory
+    )?.label || selectingCategory; // 찾지 못할 경우 대비해 기본값 설정
+
     return (
       <div className="fixed inset-0 bg-black/50 z-[2000] flex items-end justify-center">
         <div className="w-full max-w-[430px] bg-white rounded-t-[40px] p-8 h-[60vh] flex flex-col shadow-2xl">
           <div className="flex justify-between items-center mb-6 pb-4 border-b">
-            <strong className="text-lg font-bold">{selectingCategory} 선택</strong>
+            <strong className="text-lg font-bold">{categoryLabel} 선택</strong>
             <button onClick={() => setIsModalOpen(false)} className="text-2xl text-gray-400">✕</button>
           </div>
           <div className="flex-1 overflow-y-auto grid grid-cols-3 gap-3">

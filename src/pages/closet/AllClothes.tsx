@@ -132,7 +132,7 @@ const AllClothes = () => {
   const filterTabs = [{ label: '전체', value: 'ALL' }, ...CATEGORY_OPTIONS];
     return (
       <div className="flex flex-col h-full bg-white relative">
-        <div className="flex items-center justify-between p-6 pb-2">
+        <div className="flex items-center gap-3 p-6 border-b bg-white z-10">
           <div className="flex items-center gap-3">
             <button onClick={() => {
               if(isLaundryMode) { setIsLaundryMode(false); setSelectedIds(new Set()); }
@@ -140,7 +140,9 @@ const AllClothes = () => {
             }} className="text-xl font-medium text-gray-500">
             ←
             </button>
+            {/* 제목 추가 */}
             <h3 className="text-xl font-bold flex items-center gap-2">
+              <h3 className="text-xl font-bold">모든 의상</h3>
               {!isLaundryMode && <HelpIcon />}
             </h3>
           </div>
@@ -156,7 +158,7 @@ const AllClothes = () => {
         </div>
 
         {!isLaundryMode && (
-          <div className="flex gap-2 px-6 pb-4 overflow-x-auto no-scrollbar scroll-smooth">
+          <div className="flex gap-2 px-6 pt-4 pb-4 overflow-x-auto no-scrollbar scroll-smooth">
             {filterTabs.map((tab) => (
               <button
                 key={tab.value}
