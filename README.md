@@ -37,13 +37,14 @@
 
 ## 🛠 기술 스택
 
-- **Framework**: Spring Boot 3.5.9
-- **Language**: Java 17
-- **Database**: MySQL 8.0 (JPA/Hibernate)
-- **Security**: Spring Security, JWT
-- **Cloud Storage**: AWS S3
-- **Build Tool**: Gradle
-- **Additional**: Lombok
+- **Framework/Library**: React 18
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Routing**: React Router DOM
+- **API Client**: Axios
+- **Build Tool**: Vite
+- **Deployment**: Vercel
+- **Additional**: PWA (Progressive Web App), MSW (Mock Service Worker)
 
 ## 📍 컨벤션
 
