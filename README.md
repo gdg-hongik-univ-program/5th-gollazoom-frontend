@@ -52,7 +52,7 @@
 - **fix**: 버그 및  오류 수정
 - **design**: CSS 같은 사용자 UI 디자인 변경
 - **refactor**: 기능 변경 없이 코드 리펙토링
-- **style**: 코드 형태 및 세미콜론 누락 등 수
+- **style**: 코드 형태 및 세미콜론 누락 등 수정
 
 ## 📁 프로젝트 구조
 
@@ -87,7 +87,7 @@
 
 ## 🔐 보안 기능
 
-- Spring Security 기반 인증/인가
+- Spring Security 기반 인증
 - JWT Token 기반 로그인
 - BCrypt 비밀번호 암호화
 
