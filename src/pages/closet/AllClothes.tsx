@@ -58,12 +58,48 @@ const AllClothes = () => {
       console.log("서버 응답 전체 데이터:", response);
 
       if (response && response.data) {
-        if (Array.isArray(response.data)) {
-          setClothesData(response.data);
+        setIsUsingWash(response.data.isUsingWashUpTech); 
+
+        // 💡 데이터가 data.data 안에 들어있는 경우와 바로 data에 들어있는 경우 모두 대응
+        const actualData = Array.isArray(response.data.data) ? response.data.data : response.data;
+
+        if (Array.isArray(actualData)) {
+          // 💡 핵심 수정: 데이터가 올 때 subCategory가 null이면 imageUrl에서 추출합니다.
+          const fixedData = actualData.map(item => {
+            let fixedSub = item.subCategory;
+            const url = item.imageUrl || "";
+
+            // 💡 URL에 quickupload가 포함되어 있다면 무조건 추출 시도
+            if ((!fixedSub || fixedSub === "null") && url.includes('quickupload')) {
+              const parts = url.split('/');
+              // 끝에서 두 번째 마디가 subCategory (예: .../OUTER/COAT/...)
+              fixedSub = parts[parts.length - 2]; 
+            }
+
+            return {
+              ...item,
+              subCategory: fixedSub || 'T_SHIRT'
+            };
+
+            // // 퀵등록 URL 구조: .../CATEGORY/SUBCATEGORY/color.png
+            // if ((!fixedSub || fixedSub === "null") && item.imageUrl?.includes('quickupload')) {
+            //   const parts = item.imageUrl.split('/');
+            //   // URL에서 뒤에서 두 번째 마디가 subCategory일 확률이 높음
+            //   fixedSub = parts[parts.length - 2]; 
+            // }
+
+            // return {
+            //   ...item,
+            //   subCategory: fixedSub || 'T_SHIRT' // 끝까지 없으면 기본값
+            // };
+          });
+
+          console.log("🛠️ 보정된 의상 리스트:", fixedData);
+          setClothesData(fixedData);
         }
       }
     } catch (error) {
-      console.error("의상 목록 로드 실패:", error);
+      console.error("❌ 의상 목록 로드 실패:", error);
     }
   }, []);
 
@@ -154,7 +190,7 @@ const AllClothes = () => {
             </button>
             {/* 제목 추가 */}
             <h3 className="text-xl font-bold flex items-center gap-2">
-              <h3 className="text-xl font-bold">모든 의상</h3>
+              <div className="text-xl font-bold">모든 의상</div>
               {!isLaundryMode && <HelpIcon />}
             </h3>
           </div>

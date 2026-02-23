@@ -119,3 +119,19 @@ export const updateWashStatus = async (clothIds: number[], status: "WASHING" | "
   });
   return response.data;
 };
+
+
+// 코디 수정 요청 인터페이스
+export interface UpdateCoordiRequest {
+  name: string;
+  topClothId: number;
+  bottomClothId: number;
+  dressClothId: number;
+  outerClothId: number;
+}
+
+// 코디 수정 API (PATCH /api/presets/{presetId})
+export const updateCoordi = async (presetId: string | number, data: UpdateCoordiRequest) => {
+  const response = await api.patch(`/api/presets/${presetId}`, data);
+  return response.data;
+};

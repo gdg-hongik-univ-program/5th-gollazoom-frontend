@@ -23,7 +23,7 @@ const QuickAdd = () => {
   const [category, setCategory] = useState('');
   const [subCategory, setSubCategory] = useState(''); // 종류 (티셔츠, 후드티 등)
   const [selectedColor, setSelectedColor] = useState(''); // 색상 (중복 불가 단일 선택)
-  const [selectedSeasons, setSelectedSeasons] = useState<string[]>([]);
+  const [season, setSeason] = useState<string>('');
   const [isRaining, setIsRaining] = useState(true);
   const [memo, setMemo] = useState('');
 
@@ -52,8 +52,8 @@ const QuickAdd = () => {
   };
   
   const handleSubmit = async () => {
-    if (!category || !subCategory || !selectedColor || selectedSeasons.length === 0) {
-      showAlert("모든 필수 항목을 선택해주세요!", "error");
+    if (!category || !subCategory || !selectedColor || !season) {
+      alert("모든 필수 항목을 선택해주세요!");
       return;
     }
 
@@ -61,7 +61,7 @@ const QuickAdd = () => {
 
     const requestBody: QuickClothRequest = {
       category: category,         
-      season: selectedSeasons[0], // 💡 사진 등록 때와 동일하게 첫 번째 값만 보냅니다. (기존 join(',') 제거)
+      season: season, // 💡 사진 등록 때와 동일하게 첫 번째 값만 보냅니다. (기존 join(',') 제거)
       color: selectedColor, 
       memo: memo,             
       imageUrl: "",     
@@ -86,10 +86,9 @@ const QuickAdd = () => {
     setSubCategory(''); // 카테고리 바뀌면 종류 초기화
   };
 
-  const toggleSeason = (value: string) => {
-    setSelectedSeasons(prev => 
-      prev.includes(value) ? prev.filter(s => s !== value) : [...prev, value]
-    );
+  const handleSeasonClick = (value: string) => {
+    // 클릭한 값 하나만 저장
+    setSeason(value);
   };
 
   return (
@@ -184,16 +183,19 @@ const QuickAdd = () => {
             </div>
           </div>
 
-          {/* 계절 (기존 중복 선택 로직 유지) */}
-          <div>
-            <label className="block text-sm font-bold text-gray-500 mb-3">계절 (중복 가능)</label>
-            <div className="flex flex-wrap gap-2">
+          {/* 계절 (기존 중복 선택 > 불가로 수정) */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-semibold text-gray-600">계절 선택</label>
+            <div className="flex gap-2 mt-1 flex-wrap">
               {SEASON_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}
-                  onClick={() => toggleSeason(opt.value)}
-                  className={`px-4 py-2 rounded-full border text-sm font-bold transition-all ${
-                    selectedSeasons.includes(opt.value) ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-50 text-gray-400 border-gray-200'
+                  type="button"
+                  onClick={() => handleSeasonClick(opt.value)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
+                    season === opt.value // 배열이 아니라 단일 값 비교
+                      ? 'bg-blue-600 text-white border-blue-600' 
+                      : 'bg-white text-gray-400 border-gray-200'
                   }`}
                 >
                   {opt.label}

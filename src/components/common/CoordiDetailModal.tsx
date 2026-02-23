@@ -20,6 +20,7 @@ export interface CoordiData {
   presetId: string | number; 
   name: string; 
   items: CoordiClothData[]; 
+  thumbnailImageUrl?: string;
 }
 
 interface CoordiDetailModalProps {
@@ -118,7 +119,7 @@ const CoordiDetailModal = ({ data, onClose, onRefresh }: CoordiDetailModalProps)
             삭제하기
           </button>
           <button 
-            onClick={() => navigate(`/coordi-save?edit=${data.presetId}`)} 
+            onClick={() => navigate(`/coordi/edit/${data.presetId}`)} // 💡 /save 대신 /edit 사용
             className="flex-[1.5] p-3.5 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 shadow-md"
           >
             수정하기

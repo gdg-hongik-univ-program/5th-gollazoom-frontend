@@ -20,6 +20,7 @@ import CalendarPage from './pages/calendar/CalendarPage';
 import ClosetLayout from './layouts/Closetlayout';
 import QuickAdd from './components/addClothes/QuickAdd';
 import UploadDetail from './components/addClothes/UploadDetail';
+import CoordiEdit from './pages/closet/CoordiEdit';
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,6 +54,8 @@ function App() {
             <Route path="/closet/add" element={<AddClothes />} />
             <Route path="/coordi/save" element={<CoordiSave />} />
             <Route path="/coordi/all" element={<AllCoordi />} />
+            {/* :presetId는 실제 코디의 ID 값이 들어가는 변수 자리를 뜻합니다. */}
+            <Route path="/coordi/edit/:presetId" element={<CoordiEdit />} />
           </Route>
 
         </Route>

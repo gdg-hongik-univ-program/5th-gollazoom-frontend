@@ -11,6 +11,7 @@ interface CoordiCloth {
   category: string; 
   subCategory?: string;
   color?: string;
+  
 }
 
 const AllCoordi = () => {
@@ -31,7 +32,7 @@ const AllCoordi = () => {
 
       const responseData = response.data;
       if (responseData && Array.isArray(responseData.data)) {
-        setCoordiList(responseData.data);
+        setCoordiList(responseData.data.data);
         // 💡 백엔드 데이터 구조 확인을 위한 로그
         console.log("백엔드가 준 코디 데이터:", responseData.data); 
       } else if (Array.isArray(responseData)) {
@@ -70,40 +71,24 @@ const AllCoordi = () => {
                 // 💡 수정됨: items 뒤에 물음표(?)를 붙여서 하얀 화면 에러를 방지합니다!
                 const item = coordi.items?.find((i: CoordiCloth) => i.slot === slot);
                 return (
-                  <div key={slot} className="bg-gray-200 rounded-sm overflow-hidden">
-                    {item ? (
-                        <ClothItem item={item} />
+                    <div className="aspect-square rounded-2xl overflow-hidden bg-gray-100">
+                      {coordi.thumbnailImageUrl ? (
+                        <ClothItem
+                          item={{
+                            imageUrl: coordi.thumbnailImageUrl
+                          }}
+                        />
                       ) : (
-                        <div className="w-full h-full bg-gray-100" />
+                        <div className="w-full h-full bg-gray-200" />
                       )}
-                  </div>
-                );
+                    </div>
+                                    );
               })}
             </div>
             
             <div className="px-1">
               <div className="text-sm font-bold text-gray-800 truncate mb-1">{coordi.name}</div>
-              <div className="flex gap-2">
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation(); 
-                    // 💡 수정됨: 올바른 주소인 /coordi/save 로 이동합니다!
-                    navigate(`/coordi/save?edit=${coordi.presetId}`);
-                  }}
-                  className="flex-1 py-1 text-[11px] bg-white border border-blue-200 text-blue-500 rounded-md"
-                >
-                  수정
-                </button>
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation(); 
-                    /* 삭제 로직 */
-                  }}
-                  className="flex-1 py-1 text-[11px] bg-white border border-red-100 text-red-400 rounded-md"
-                >
-                  삭제
-                </button>
-              </div>
+                
             </div>
           </div>
         ))}
