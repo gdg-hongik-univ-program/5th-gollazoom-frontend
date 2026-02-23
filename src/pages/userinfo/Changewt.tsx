@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { setWorkTime, getUserInfo } from '../../api/users';
+import { changeWorktime, getUserInfo } from '../../api/users';
 import AlertModal from '../../components/modal/Alert';
 
 const WorkTimePage = () => {
@@ -40,7 +40,7 @@ const WorkTimePage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await setWorkTime(time);   
+      await changeWorktime(time);   
       localStorage.setItem('worktime', time);   
       
       showAlert("출근 시간이 성공적으로 설정되었습니다!", "success", () => {

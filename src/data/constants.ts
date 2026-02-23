@@ -40,27 +40,27 @@ export const TAG_OPTIONS = [
 
 export const SUB_CATEGORY_OPTIONS: Record<string, Option[]> = {
   TOP: [
-    { label: '티셔츠', value: 't-shirt' },
-    { label: '맨투맨', value: 'mantoman' },
-    { label: '후드티', value: 'hoodie' },
-    { label: '셔츠', value: 'shirt' },
-    { label: '블라우스', value: 'blouse' },
-    { label: '니트', value: 'knit' },
+    { label: '티셔츠', value: 'T_SHIRT' },
+    { label: '맨투맨', value: 'MANTOMAN' },
+    { label: '후드티', value: 'HOODIE' },
+    { label: '셔츠', value: 'SHIRT' },
+    { label: '블라우스', value: 'BLOUSE' },
+    { label: '니트', value: 'KNIT' },
   ],
   BOTTOM: [
-    { label: '청바지', value: 'jeans' },
-    { label: '슬랙스', value: 'slacks' },
-    { label: '반바지', value: 'shorts' },
-    { label: '치마', value: 'skirt' },
+    { label: '청바지', value: 'JEANS' },
+    { label: '슬랙스', value: 'SLACKS' },
+    { label: '반바지', value: 'SHORTS' },
+    { label: '치마', value: 'SKIRT' },
   ],
   DRESS: [
-    { label: '원피스', value: 'dress' },
+    { label: '원피스', value: 'DRESS' },
   ],
   OUTER: [
-    { label: '가디건', value: 'cardigan' },
-    { label: '코트', value: 'coat' },
-    { label: '패딩', value: 'padded-jacket' },
-    { label: '블레이저', value: 'blazer' },
+    { label: '가디건', value: 'CARDIGAN' },
+    { label: '코트', value: 'COAT' },
+    { label: '패딩', value: 'PADDING' },
+    { label: '블레이저', value: 'BLAZER' },
   ],
 };
 

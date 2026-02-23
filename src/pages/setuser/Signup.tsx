@@ -16,8 +16,8 @@ const SignupPage = () => {
         type: "info" as "success" | "error" | "info"
     });
 
+    const [isUsernameValid, setIsUsernameValid] = useState(false);
     const navigate = useNavigate();
-
     const showAlert = (message: string, type: "success" | "error" | "info" = "info") => {
         setAlertState({ isOpen: true, message, type });
     };
@@ -31,10 +31,19 @@ const SignupPage = () => {
             ...formData,
             [e.target.name]: e.target.value,
         });
+        if (e.target.name === "username") {
+            setIsUsernameValid(false);
+        }
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (!isUsernameValid) {
+            showAlert("아이디 중복확인을 먼저 완료해주세요.", "error");
+            return;
+        }
+
         try {
             const data = await signup(formData);
             console.log("Signup successful:", data);
@@ -53,19 +62,21 @@ const SignupPage = () => {
             showAlert("아이디를 입력해주세요.", "error");
             return;
         }
-
         try {
-            const data = await checkUsername(formData.username);
-            if (data && data.username) {
-                showAlert("이미 사용 중인 아이디입니다.", "error");
-            } 
-        } catch (error: any) {
-            if (error.response && error.response.status === 404) {
-              showAlert("사용 가능한 아이디입니다.", "success");
+            const responseData = await checkUsername(formData.username);
+            
+            const isAvailable = responseData.data; 
+            if (isAvailable === true) {
+                showAlert("사용 가능한 아이디입니다.", "success");
+                setIsUsernameValid(true);
             } else {
+                showAlert("이미 사용 중인 아이디입니다.", "error");
+                setIsUsernameValid(false);
+            }
+        } catch (error) {
              console.error("중복 확인 에러", error);
              showAlert("중복 확인 중 오류가 발생했습니다.", "error");
-            }        
+             setIsUsernameValid(false);
         }
     }
 
@@ -82,7 +93,7 @@ const SignupPage = () => {
                     name="username"
                     type="text"
                     required
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
                     placeholder="사용할 아이디"
                     onChange={handleChange}
                 />
@@ -102,7 +113,7 @@ const SignupPage = () => {
                     name="password"
                     type="password"
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
                     placeholder="사용할 비밀번호"
                     onChange={handleChange}
                 />
@@ -115,7 +126,7 @@ const SignupPage = () => {
                 value={formData.nickname}
                 type="text"
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
                 placeholder="닉네임 (이름)"
                 onChange={handleChange}
                 maxLength={10}
@@ -140,7 +151,6 @@ const SignupPage = () => {
             </span>
           </div>
         </div>
-
         <AlertModal 
             isOpen={alertState.isOpen}
             onClose={closeAlert}

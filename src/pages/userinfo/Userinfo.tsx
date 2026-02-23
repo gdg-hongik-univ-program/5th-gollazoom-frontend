@@ -2,6 +2,7 @@ import { deleteUser, getUserInfo, getWashsetting, changeWashsetting } from "../.
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import AlertModal from "../../components/modal/Alert";
+import ConfirmModal from "../../components/common/ConfirmModal";
 
 const UserInfo = () => {
     const navigate = useNavigate();
@@ -12,6 +13,8 @@ const UserInfo = () => {
     });
 
     const [isUsingWash, setIsUsingWash] = useState(false);
+
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
     const [alertState, setAlertState] = useState({
         isOpen: false,
@@ -58,7 +61,7 @@ const UserInfo = () => {
         }
     };
 
-    {/* 로그아웃 추가 */}
+    {/* 로그아웃 */}
     const handleLogout = () => {
         localStorage.clear(); 
         showAlert("로그아웃 되었습니다.", "success", () => {
@@ -66,8 +69,8 @@ const UserInfo = () => {
         });
     };
 
-    const handleDelete = async () => {
-        if (!window.confirm("정말로 회원탈퇴를 진행하시겠습니까?")) return;
+    const executeDelete = async () => {
+        setIsConfirmOpen(false); // 실행 전 모달 닫기
         try {
             await deleteUser();
             localStorage.clear();
@@ -186,7 +189,7 @@ const UserInfo = () => {
         {/* 하단 버튼 영역 */}
         <div className="bg-gray-50 px-6 py-4 flex flex-col gap-3">
           <button
-            onClick={handleDelete}
+            onClick={() => setIsConfirmOpen(true)}
             className="w-full py-2.5 text-red-600 border border-red-200 rounded-lg hover:bg-red-50 font-medium transition text-sm"
           >
             회원 탈퇴하기
@@ -199,6 +202,13 @@ const UserInfo = () => {
           </button>
         </div>
       </div>
+
+      <ConfirmModal 
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={executeDelete}
+        message={"정말로 회원탈퇴하시겠습니까? \n 탈퇴 시 모든 데이터가 삭제되며 \n 복구할 수 없습니다."}
+      />
 
       <AlertModal 
         isOpen={alertState.isOpen}

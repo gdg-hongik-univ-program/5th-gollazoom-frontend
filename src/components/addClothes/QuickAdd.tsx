@@ -7,7 +7,8 @@ import {
     type Option 
 } from '../../data/constants';
 import { useNavigate } from "react-router-dom";
-import { addCloth, type QuickClothRequest } from '../../api/closet';
+import { addQuickCloth, type QuickClothRequest } from '../../api/closet';
+import AlertModal from '../../components/modal/Alert';
 
 // 아이콘 경로를 반환하는 헬퍼 함수
 const getIconPath = (cat: string, sub: string) => {
@@ -34,36 +35,52 @@ const QuickAdd = () => {
 
   const iconUrl = getIconPath(category, subCategory);
 
+  const [alertState, setAlertState] = useState({
+      isOpen: false,
+      message: "",
+      type: "info" as "success" | "error" | "info",
+      onConfirm: () => {} 
+  });
+
+  const showAlert = (message: string, type: "success" | "error" | "info" = "info", onConfirm?: () => void) => {
+      setAlertState({ 
+          isOpen: true, 
+          message, 
+          type, 
+          onConfirm: onConfirm || (() => setAlertState(prev => ({ ...prev, isOpen: false })))
+      });
+  };
+  
   const handleSubmit = async () => {
     if (!category || !subCategory || !selectedColor || selectedSeasons.length === 0) {
-      alert("모든 필수 항목을 선택해주세요!");
+      showAlert("모든 필수 항목을 선택해주세요!", "error");
       return;
     }
 
-    // COLOR_OPTIONS에서 선택된 색상의 hex 값을 가져옴
     const colorInfo = COLOR_OPTIONS.find(opt => opt.value === selectedColor);
 
     const requestBody: QuickClothRequest = {
-      category: category,         // 예: "TOP"
-      season: selectedSeasons.join(','), 
+      category: category,         
+      season: selectedSeasons[0], // 💡 사진 등록 때와 동일하게 첫 번째 값만 보냅니다. (기존 join(',') 제거)
       color: selectedColor, 
       memo: memo,             
-      imageUrl: "",     // 퀵등록이므로 빈 값 전송
-      subCategory: subCategory, // 예: "T_SHIRT"
-      colorCode: colorInfo?.hex || "#FFFFFF", // 퀵등록용 색상 코드
+      imageUrl: "",     
+      subCategory: subCategory, 
+      colorCode: (colorInfo?.hex || "FFFFFF").replace('#', ''),
       isRaining: isRaining
     };
 
     try {
-      await addCloth(requestBody);
+      // 💡 기존 addCloth 대신 새로 만든 addQuickCloth를 호출합니다!
+      await addQuickCloth(requestBody);
       console.log("퀵등록 요청:", requestBody);
-      alert("의상이 추가되었습니다.");
-      navigate('/closet');
+      showAlert("의상이 추가되었습니다.", "success", () => navigate('/closet'));
     } catch (error) {
-      alert("등록 실패");
+      console.error(error);
+      showAlert("등록 실패", "error");
     }
   };
-  
+
   const handleCategoryChange = (val: string) => {
     setCategory(val);
     setSubCategory(''); // 카테고리 바뀌면 종류 초기화

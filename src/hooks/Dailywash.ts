@@ -6,6 +6,22 @@ export const useDailyWash = () => {
   const [isWashModalOpen, setIsWashModalOpen] = useState(false);
   const [todayClothIds, setTodayClothIds] = useState<number[]>([]);
 
+  const [alertState, setAlertState] = useState({
+    isOpen: false,
+    message: "",
+    type: "info" as "success" | "error" | "info",
+    onConfirm: () => {}
+  });
+
+  const showAlert = (message: string, type: "success" | "error" | "info" = "info", onConfirm?: () => void) => {
+    setAlertState({ 
+        isOpen: true, 
+        message, 
+        type, 
+        onConfirm: onConfirm || (() => setAlertState(prev => ({ ...prev, isOpen: false })))
+    });
+  };
+
   const getTodayString = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -29,7 +45,7 @@ export const useDailyWash = () => {
         setTodayClothIds(response.data.clothIds);
         setIsWashModalOpen(true);
       } else {
-        if (!isAuto) alert("오늘 캘린더에 등록된 의상이 없습니다.");
+        if (!isAuto) showAlert("오늘 캘린더에 등록된 의상이 없습니다.", "info");
       }
     } catch (error) {
       console.error("착용 기록 조회 실패:", error);
@@ -54,15 +70,14 @@ export const useDailyWash = () => {
   const handleConfirmWash = async () => {
     try {
       await updateWashStatus(todayClothIds, "WASHING");
-      alert("오늘 입은 옷들을 세탁 바구니로 보냈습니다!");
+      showAlert("오늘 입은 옷들을 세탁 바구니로 보냈습니다!", "success");
       setIsWashModalOpen(false);
 
-      // 사용자가 '예'를 눌러서 성공했을 때만 오늘 날짜를 저장
       localStorage.setItem('lastWashCompleteDate', getTodayString());
 
     } catch (error) {
       console.error("세탁 상태 변경 실패:", error);
-      alert("오류가 발생했습니다.");
+      showAlert("오류가 발생했습니다.", "error");
     }
   };
 
@@ -72,6 +87,7 @@ export const useDailyWash = () => {
 
   return {
     isWashModalOpen,
+    alertState,
     triggerWashPrompt,
     handleConfirmWash,
     handleCancelWash

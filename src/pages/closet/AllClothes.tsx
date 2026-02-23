@@ -6,6 +6,7 @@ import { getClothes, getClothDetail, updateWashStatus } from '../../api/closet';
 import ClothItem from '../../components/common/ClothItem';
 import HelpIcon from '../../components/guide/HelpIcon'; 
 import { Archive, CheckCircle2, Circle } from 'lucide-react';
+import AlertModal from '../../components/modal/Alert';
 
 interface Cloth {
   clothId: string;
@@ -31,7 +32,25 @@ const AllClothes = () => {
   const [isLaundryMode, setIsLaundryMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  const [isUsingWash, setIsUsingWash] = useState(false);
+  const [isUsingWash, setIsUsingWash] = useState(() => {
+    return localStorage.getItem('isUsingWashUpTech') === 'true';
+  });
+
+  const [alertState, setAlertState] = useState({
+      isOpen: false,
+      message: "",
+      type: "info" as "success" | "error" | "info",
+      onConfirm: () => {} 
+  });
+
+  const showAlert = (message: string, type: "success" | "error" | "info" = "info", onConfirm?: () => void) => {
+      setAlertState({ 
+          isOpen: true, 
+          message, 
+          type, 
+          onConfirm: onConfirm || (() => setAlertState(prev => ({ ...prev, isOpen: false })))
+      });
+  };
 
   const fetchClothes = useCallback(async () => {
     try {
@@ -39,10 +58,8 @@ const AllClothes = () => {
       console.log("서버 응답 전체 데이터:", response);
 
       if (response && response.data) {
-      setIsUsingWash(response.data.isUsingWashUpTech); 
-
-        if (Array.isArray(response.data.items)) {
-          setClothesData(response.data.items);
+        if (Array.isArray(response.data)) {
+          setClothesData(response.data);
         }
       }
     } catch (error) {
@@ -86,8 +103,6 @@ const AllClothes = () => {
 
     // 세탁 중인 옷을 클릭했을 때 세탁 완료 처리함
     if (isWashing) {
-      const confirmComplete = window.confirm("세탁이 완료되었나요? 다시 옷장으로 가져옵니다.");
-      if (confirmComplete) {
         try {
           // 상태를 AVAILABLE로 업데이트
           await updateWashStatus([Number(clothId)], "AVAILABLE");
@@ -95,13 +110,10 @@ const AllClothes = () => {
           return;
         } catch (error) {
           console.error("상태 변경 실패", error);
-          alert("상태 변경 중 오류가 발생했습니다.");
+          showAlert("상태 변경 중 오류가 발생했습니다.", "error");
           return;
         }
-      } else {
-        return;
       }
-    }
 
     try {
       const response = await getClothDetail(clothId);
@@ -112,20 +124,20 @@ const AllClothes = () => {
   // 세탁 상태 변경 요청 함수
   const handleUpdateStatus = async (status: "WASHING" | "AVAILABLE") => {
     if (selectedIds.size === 0) {
-      alert("선택된 의상이 없습니다.");
+      showAlert("선택된 의상이 없습니다.", "error");
       return;
     }
     try {
       const idsAsNumber = Array.from(selectedIds).map(id => Number(id));
       await updateWashStatus(idsAsNumber, status);
-      alert("선택한 옷을 빨래통으로 보냈습니다!");  
       // 상태 초기화 및 목록 새로고침
       setIsLaundryMode(false);
       setSelectedIds(new Set());
       fetchClothes(); 
+      showAlert("선택한 옷을 빨래통으로 보냈습니다!", "success");  
     } catch (error) {
       console.error("상태 변경 실패", error);
-      alert("오류가 발생했습니다.");
+      showAlert("오류가 발생했습니다.", "error");
     }
   };
 
@@ -150,8 +162,8 @@ const AllClothes = () => {
           {!isLaundryMode && isUsingWash && (
             <button 
               onClick={() => setIsLaundryMode(true)}
-              className="p-2 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-100 transition"
-              >
+              className="absolute top-4 right-5 z-50 p-2.5 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-100 transition shadow-md"
+            >              
               <Archive size={22} />
             </button>
           )}
@@ -165,8 +177,8 @@ const AllClothes = () => {
                 onClick={() => setActiveFilter(tab.value)}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors
                  ${activeFilter === tab.value 
-                   ? 'bg-gray-900 text-white shadow-sm' 
-                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                   ? 'bg-blue-800 text-white shadow-sm' 
+                   : 'bg-blue-100 text-blue-600 hover:bg-blue-200'}`}
               >
                 {tab.label}
               </button>
@@ -252,6 +264,12 @@ const AllClothes = () => {
           onRefresh={fetchClothes} 
         />
       )}
+      <AlertModal 
+        isOpen={alertState.isOpen}
+        onClose={alertState.onConfirm}
+        message={alertState.message}
+        type={alertState.type}
+      />
     </div>
   );
 };

@@ -13,12 +13,10 @@ const WorkTimePage = () => {
       await setWorkTime(time);      
       await changeWashsetting(isUsingWash);
       localStorage.setItem('isUsingWashUpTech', String(isUsingWash));
-      alert("출근 시간이 설정되었습니다!");
       navigate('/'); 
     } catch (error) {
       console.error("출근 시간 설정 실패:", error);
       console.log(time);
-      alert("시간 설정에 실패했습니다. 다시 시도해주세요.");
     }
   };
 

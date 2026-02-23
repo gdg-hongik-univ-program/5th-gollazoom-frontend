@@ -1,4 +1,4 @@
-// 내용 수정으로 인해 혹시 몰라 남겨둔 복사본 (의미 없음)
+/* 내용 수정으로 인해 혹시 몰라 남겨둔 복사본 (의미 없음)
 
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -103,6 +103,7 @@ const AddClothes = () => {
           </div>
         ) : (
           /* 등록 상세 정보 폼 */
+          /*
           <div className="flex flex-col gap-6">
             <div className="relative w-full aspect-square rounded-3xl overflow-hidden bg-gray-100 shadow-inner">
               <img src={image} className="w-full h-full object-cover" alt="preview" />
@@ -189,3 +190,4 @@ const AddClothes = () => {
 };
 
 export default AddClothes;
+*/

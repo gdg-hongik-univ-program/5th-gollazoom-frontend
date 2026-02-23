@@ -7,6 +7,7 @@ import {
   type Option 
 } from '../../data/constants';
 import { addCloth } from '../../api/closet';
+import AlertModal from '../../components/modal/Alert';
 
 const UploadDetail = () => {
   const { state } = useLocation();
@@ -47,32 +48,46 @@ const UploadDetail = () => {
     );
   };
 
+  const [alertState, setAlertState] = useState({
+    isOpen: false,
+    message: "",
+    type: "info" as "success" | "error" | "info"
+  });
+
+  const showAlert = (message: string, type: "success" | "error" | "info" = "info") => {
+    setAlertState({ isOpen: true, message, type });
+  };
+
   const handleSubmit = async () => {
     if (!imageFile || !category || selectedSeasons.length === 0 || selectedColors.length === 0) {
-      alert("이미지와 필수 항목을 모두 선택해주세요.");
+      showAlert("이미지와 필수 항목을 모두 선택해주세요.", "error");
+      return;
       return;
     }
 
     const formData = new FormData();
-    if (imageFile) formData.append('image', imageFile);
-    formData.append('category', category);
-    formData.append('season', selectedSeasons.join(','));
-    formData.append('color', selectedColors.join(','));
-    formData.append('isRaining', String(isRaining));
-    formData.append('memo', memo);
+    
+    formData.append('image', imageFile); 
 
-    // 사진 등록일 때는 이 값들을 비워서
-    formData.append('imageUrl', "FILE_UPLOAD"); // ""이 아니면 파일 업로드로 인식할 것임
-    formData.append('subCategory', ""); 
-    formData.append('colorCode', "");
+    const requestData = {
+      category: category,
+      season: selectedSeasons[0],
+      color: selectedColors[0],
+      isRaining: isRaining,
+      memo: memo
+    };
+
+    formData.append(
+      "data", 
+      new Blob([JSON.stringify(requestData)], { type: "application/json" })
+    );
 
     try {
       await addCloth(formData);
-      alert("옷이 추가되었어요.");
-      setIsSubmitted(true);
+      setIsSubmitted(true); 
     } catch (error) {
       console.error("등록 실패:", error);
-      alert("의상 등록 중 오류가 발생했습니다.");
+      showAlert("의상 등록 중 오류가 발생했습니다.", "error");W
     }
   };
 
@@ -84,7 +99,6 @@ const UploadDetail = () => {
         <p className="text-gray-500 mb-8">새로운 의상이 옷장에 추가되었습니다.</p>
         
         <div className="flex flex-col w-full gap-3">
-            {/* 추가 등록 버튼 */}
             <button 
             onClick={() => {
                 setPreviewUrl(null);
@@ -101,7 +115,6 @@ const UploadDetail = () => {
             추가로 의상 등록하기
             </button>
 
-            {/* 옷장 이동 버튼 */}
             <button 
             onClick={() => navigate('/closet')}
             className="w-full p-4 bg-black text-white rounded-2xl font-bold"
@@ -225,6 +238,12 @@ const UploadDetail = () => {
           </button>
         </div>
       </div>
+      <AlertModal 
+        isOpen={alertState.isOpen}
+        onClose={() => setAlertState(prev => ({ ...prev, isOpen: false }))}
+        message={alertState.message}
+        type={alertState.type}
+      />
     </div>
   );
 };
